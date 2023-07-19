@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: db-mdr-dev-env
+  name: {{ .Values.timescale.config.name }}
   labels:
-    app: db-mdr-dev
-    version: v2
-data:
-  POSTGRES_USER: 'postgres'
-  POSTGRES_PASSWORD: 'abc123'
+    app: {{ .Values.timescale.name }}
+    version: {{ .Values.timescale.version }}
+data: 
+{{- range .Values.timescale.config.data }}
+  {{ .key }}: {{ .value }}
+{{- end}}
