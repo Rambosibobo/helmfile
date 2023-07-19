@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-mdr-dev-env
+  labels:
+    app: db-mdr-dev
+    version: v2
+data:
+  POSTGRES_USER: 'postgres'
+  POSTGRES_PASSWORD: 'abc123'
