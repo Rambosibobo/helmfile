@@ -1,42 +1,42 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: db-mdr-dev
+  name: {{ .Values.timescale.name }}
   labels:
-    app: db-mdr-dev
-    version: v2
+    app: {{ .Values.timescale.name }}
+    version: {{ .Values.timescale.version }}
 spec:
-  serviceName: db-mdr-dev
-  replicas: 1
+  serviceName: {{ .Values.timescale.name }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: db-mdr-dev
-      version: v2
+      app: {{ .Values.timescale.name }}
+      version: {{ .Values.timescale.version }}
   template:
     metadata:
       labels:
-        app: db-mdr-dev
-        version: v2
+        app: {{ .Values.timescale.name }}
+        version: {{ .Values.timescale.version }}
     spec:
       containers:
-      - name: db-mdr-dev
-        image: timescale/timescaledb:latest-pg14
+      - name: {{ .Values.timescale.name }}
+        image: {{ .Values.timescale.container.image }}
         ports:
-        - containerPort: 5432
+        - containerPort: {{ .Values.timescale.container.port }}
           protocol: TCP
         envFrom:
         - configMapRef:
-            name: db-mdr-dev-env
+            name: {{ .Values.timescale.config.name }}
         volumeMounts:
-        - name: db-mdr-dev-pvc
-          mountPath: /var/lib/postgresql/data
+        - name: {{ .Values.timescale.volume.name }}
+          mountPath: {{ .Values.timescale.volume.mountPath }}
   volumeClaimTemplates:
   - metadata:
-      name: db-mdr-dev-pvc
+      name: {{ .Values.timescale.volume.name }}
     spec:
       accessModes:
-      - ReadWriteMany
-      storageClassName: rook-cephfs
+      - {{ .Values.timescale.volume.pvc.accessMode }}
+      storageClassName: {{ .Values.timescale.volume.pvc.storageClassName }}
       resources:
         requests:
-          storage: 5Gi
+          storage: {{ .Values.timescale.volume.pvc.storage }}
