@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-mdr-dev
+  labels:
+    app: db-mdr-dev
+    version: v2
+spec:
+  serviceName: db-mdr-dev
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-mdr-dev
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: db-mdr-dev
+        version: v2
+    spec:
+      containers:
+      - name: db-mdr-dev
+        image: timescale/timescaledb:latest-pg14
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: db-mdr-dev-env
+        volumeMounts:
+        - name: db-mdr-dev-pvc
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: db-mdr-dev-pvc
+    spec:
+      accessModes:
+      - ReadWriteMany
+      storageClassName: rook-cephfs
+      resources:
+        requests:
+          storage: 5Gi
