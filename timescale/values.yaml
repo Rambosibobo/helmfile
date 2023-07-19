@@ -1,24 +1,24 @@
 replicaCount: 1
-
-postgres:
-  name: postgres
-  group: db
+timescale:
+  name: db-mdr-dev
+  version: v2
   container:
-    image: postgres:9.6-alpine
+    image: timescale/timescaledb:latest-pg14
     port: 5432
   service:
-    type: ClusterIP
+    name: tcp-5432
     port: 5432
   volume:
-    name: postgres-storage
-    kind: PersistentVolumeClaim
+    name: db-mdr-dev-pvc
     mountPath: /var/lib/postgresql/data
     pvc:
-      name: postgres-persistent-volume-claim
-      accessMode: ReadWriteOnce
-      storage: 4Gi
+      storageClassName: rook-cephfs
+      accessMode: ReadWriteMany
+      storage: 5Gi
   config:
-    name: postgres-config
+    name: db-mdr-dev-env
     data: 
-      - key: key
-        value: value
+      - key: POSTGRES_USER
+        value: 'postgres'
+      - key: POSTGRES_PASSWORD
+        value: 'abc123'
