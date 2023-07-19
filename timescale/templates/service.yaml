@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: db-mdr
+  labels:
+    app: db-mdr-dev
+    version: v2
+spec:
+  ports:
+  - name: tcp-5432
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: db-mdr-dev
